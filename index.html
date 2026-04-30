@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lambright Designs — Nathaniel Lambright</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Barlow+Condensed:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red:        #8B1A1A;
+  --red-bright: #c8372d;
+  --blue:       #00AEEF;
+  --blue-dark:  #0077aa;
+  --black:      #0a0a0a;
+  --dark:       #111111;
+  --dark2:      #1a1a1a;
+  --light:      #ffffff;
+  --muted:      #ffffff;
+}
+
+@font-face {
+  font-family: 'Vox';
+  src: url('Vox-BoldItalic.woff2') format('woff2'),
+       url('Vox-BoldItalic.woff') format('woff'),
+       url('Vox-BoldItalic.ttf') format('truetype');
+  font-weight: 700; font-style: italic;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--black); color: var(--light);
+  font-family: 'DM Mono', monospace;
+  font-size: 15px;
+  line-height: 1.65;
+  overflow-x: hidden; cursor: crosshair;
+}
+body::before {
+  content: ''; position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9999; opacity: 0.5;
+}
+
+/* ── MUSIC PLAYER ── */
+#music-player {
+  position: fixed; bottom: 24px; right: 24px; z-index: 500;
+  display: flex; align-items: center; gap: 10px;
+  background: var(--dark2); border: 1px solid var(--blue); color: var(--light);
+  padding: 10px 16px;
+  box-shadow: 0 0 20px rgba(0,174,239,0.2), 4px 4px 0 var(--red-bright);
+  font-size: 11px; letter-spacing: 0.08em;
+}
+#music-player button { background: none; border: none; color: var(--blue); cursor: pointer; font-size: 14px; padding: 0; }
+#music-player button:hover { color: var(--red-bright); }
+#track-name { max-width: 130px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.vinyl {
+  width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+  background: repeating-radial-gradient(circle, #1a1a1a 0 2px, #333 2px 3px, #1a1a1a 3px 5px);
+  position: relative;
+}
+.vinyl::after {
+  content: ''; position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%); width: 7px; height: 7px;
+  border-radius: 50%; background: var(--blue);
+}
+.vinyl.spinning { animation: spin 3s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0 48px; height: 64px;
+  background: var(--black); border-bottom: 2px solid var(--red);
+}
+nav::after {
+  content: ''; position: absolute; bottom: -5px; left: 0; right: 0;
+  height: 2px; background: var(--blue);
+}
+.nav-logo-wrap { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.nav-logo-img { height: 34px; width: 34px; object-fit: contain; }
+.nav-brand {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700; font-style: italic; font-size: 19px;
+  color: var(--light); letter-spacing: 0.04em; line-height: 1;
+}
+.nav-brand span { color: var(--blue); }
+.nav-links { display: flex; gap: 32px; list-style: none; }
+.nav-links a {
+  text-decoration: none; color: var(--light);
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  transition: color 0.2s; position: relative;
+}
+.nav-links a::after {
+  content: ''; position: absolute; bottom: -4px; left: 0;
+  width: 0; height: 2px; background: var(--blue); transition: width 0.3s;
+}
+.nav-links a:hover { color: var(--light); }
+.nav-links a:hover::after { width: 100%; }
+
+/* ── HERO ── */
+#home {
+  min-height: 100vh; padding-top: 64px;
+  display: grid; grid-template-columns: 1fr 1fr;
+  position: relative; overflow: hidden;
+}
+#home::before {
+  content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 6px;
+  background: linear-gradient(180deg, var(--red) 50%, var(--blue) 50%); z-index: 5;
+}
+.hero-text {
+  padding: 80px 56px; display: flex; flex-direction: column;
+  justify-content: center; position: relative; z-index: 2;
+}
+.hero-eyebrow {
+  font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--blue); margin-bottom: 20px;
+  display: flex; align-items: center; gap: 10px;
+}
+.hero-eyebrow::before {
+  content: ''; display: inline-block; width: 32px; height: 2px; background: var(--red);
+}
+.hero-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700; font-style: italic;
+  font-size: clamp(52px, 6.5vw, 88px); line-height: 0.9; margin-bottom: 8px; color: var(--light);
+}
+.hero-name .r { color: var(--red-bright); }
+.hero-name .b { color: var(--blue); }
+.hero-sub {
+  font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 28px; padding-left: 2px;
+}
+.hero-stripe {
+  width: 100%; height: 5px; margin-bottom: 28px;
+  background: linear-gradient(90deg, var(--red) 50%, var(--blue) 50%);
+}
+.hero-desc { font-size: 15px; line-height: 1.9; color: var(--light); max-width: 440px; margin-bottom: 44px; }
+.hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+.btn-p {
+  display: inline-block; background: var(--red-bright); color: white;
+  padding: 13px 30px; font-family: 'DM Mono', monospace; font-size: 12px;
+  letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none;
+  box-shadow: 4px 4px 0 var(--blue); transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn-p:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--blue); }
+.btn-s {
+  display: inline-block; background: transparent; color: var(--blue);
+  padding: 13px 30px; font-family: 'DM Mono', monospace; font-size: 12px;
+  letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none;
+  border: 1px solid var(--blue); transition: background 0.2s, color 0.2s;
+}
+.btn-s:hover { background: var(--blue); color: var(--black); }
+.hero-visual { position: relative; overflow: hidden; background: var(--dark2); }
+.hero-img {
+  width: 100%; height: 100%; object-fit: cover; object-position: top center;
+  display: block; filter: grayscale(25%) contrast(1.05); transition: transform 0.6s;
+}
+.hero-visual:hover .hero-img { transform: scale(1.03); }
+.hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(139,26,26,0.22) 0%, transparent 55%);
+  pointer-events: none;
+}
+.hero-bar {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 5px;
+  background: linear-gradient(90deg, var(--blue) 50%, var(--red) 50%);
+}
+.hero-badge {
+  position: absolute; top: 24px; right: 24px;
+  background: var(--blue); color: var(--black);
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; padding: 6px 14px;
+}
+.hero-logo-wm {
+  position: absolute; bottom: 18px; left: 18px; width: 52px;
+  opacity: 0.65; filter: brightness(10);
+}
+
+/* ── SECTION COMMON ── */
+section { padding: 96px 0; }
+.sec-hdr {
+  padding: 0 56px; margin-bottom: 56px;
+  display: flex; align-items: center; gap: 18px; position: relative;
+}
+.sec-hdr::after {
+  content: ''; position: absolute; bottom: -16px; left: 56px; right: 56px;
+  height: 1px; background: linear-gradient(90deg, var(--red), var(--blue));
+}
+.sec-num { font-size: 12px; color: var(--blue); letter-spacing: 0.12em; }
+.sec-ttl {
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-style: italic;
+  font-size: clamp(30px, 3.5vw, 50px); line-height: 1; color: var(--light);
+}
+.sec-ttl span { color: var(--red-bright); }
+
+/* ── SERVICES ── */
+#services { background: var(--dark); border-top: 2px solid var(--red); border-bottom: 2px solid var(--blue); }
+.svcs { display: grid; grid-template-columns: repeat(4,1fr); border-top: 1px solid rgba(255,255,255,0.05); }
+.svc {
+  padding: 40px 32px; border-right: 1px solid rgba(255,255,255,0.05);
+  position: relative; transition: background 0.3s;
+}
+.svc::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--red); opacity: 0; transition: opacity 0.3s;
+}
+.svc:hover { background: rgba(139,26,26,0.08); }
+.svc:hover::before { opacity: 1; }
+.svc:last-child { border-right: none; }
+.svc-icon { font-size: 20px; color: var(--blue); display: block; margin-bottom: 16px; }
+.svc-name {
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-style: italic;
+  font-size: 22px; color: var(--light); margin-bottom: 14px;
+}
+.svc-list { list-style: none; font-size: 13px; line-height: 2.2; color: var(--light); }
+.svc-list li::before { content: '// '; color: var(--blue); }
+
+/* ── BOOK ── */
+#portfolio { background: var(--black); }
+.book-cats {
+  display: flex; gap: 8px; flex-wrap: wrap; padding: 0 56px; margin-bottom: 48px;
+}
+.cat {
+  padding: 8px 22px; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  font-family: 'DM Mono', monospace; border: 1px solid #2a2a2a; background: transparent;
+  color: var(--light); cursor: pointer; transition: all 0.2s;
+}
+.cat:hover { border-color: var(--blue); color: var(--blue); }
+.cat.on { background: var(--red-bright); border-color: var(--red-bright); color: white; }
+.book-scene { padding: 0 56px; }
+.book { position: relative; max-width: 1100px; margin: 0 auto; }
+.spine {
+  position: absolute; left: 50%; top: 0; bottom: 0; width: 14px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, var(--red) 0%, #500 40%, var(--blue-dark) 60%, var(--blue) 100%);
+  z-index: 20; box-shadow: 0 0 28px rgba(0,174,239,0.25), 0 0 28px rgba(139,26,26,0.25);
+}
+.chapter { display: none; }
+.chapter.on { display: block; }
+.spread {
+  display: grid; grid-template-columns: 1fr 1fr;
+  background: #141414; border: 1px solid #222;
+  box-shadow: -10px 6px 48px rgba(0,0,0,0.7), 10px 6px 48px rgba(0,0,0,0.7);
+  margin-bottom: 4px; position: relative;
+}
+.spread::after {
+  content: ''; position: absolute; bottom: 0; right: 0;
+  width: 44px; height: 44px;
+  background: linear-gradient(135deg, transparent 60%, rgba(0,174,239,0.07) 100%);
+  pointer-events: none;
+}
+.pg-l {
+  padding: 44px 40px 44px 44px; border-right: 1px solid #222;
+  min-height: 460px; display: flex; flex-direction: column; position: relative;
+  background: linear-gradient(to right, #131313, #171717);
+}
+.pg-r {
+  padding: 44px 44px 44px 40px; min-height: 460px;
+  display: flex; flex-direction: column;
+  background: linear-gradient(to left, #131313, #171717);
+}
+.pg-l::after {
+  content: ''; position: absolute; top: 20px; right: -1px; bottom: 20px;
+  width: 2px; background: linear-gradient(180deg, var(--red), var(--blue));
+}
+.pgnum {
+  font-size: 10px; letter-spacing: 0.14em; color: rgba(255,255,255,0.78);
+  text-transform: uppercase; margin-bottom: 14px;
+}
+.pgnum b { color: var(--blue); font-weight: 400; }
+.pgtitle {
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-style: italic;
+  font-size: 22px; color: var(--light); margin-bottom: 6px;
+  border-bottom: 1px solid #222; padding-bottom: 10px; line-height: 1.1;
+}
+.pgtitle .r { color: var(--red-bright); }
+.pgtitle .b { color: var(--blue); }
+.pgmedia {
+  flex: 1; overflow: hidden; position: relative;
+  background: #0c0c0c; margin-bottom: 10px; border: 1px solid #1e1e1e;
+}
+.pgmedia img {
+  width: 100%; height: 100%; object-fit: cover;
+  display: block; transition: transform 0.5s;
+}
+.pgmedia:hover img { transform: scale(1.04); }
+.pgmedia video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pgcap { font-size: 11px; color: var(--light); letter-spacing: 0.08em; text-transform: uppercase; }
+.pgbody { font-size: 13px; line-height: 1.85; color: var(--light); margin-top: 10px; }
+.pg-full {
+  grid-column: 1 / -1; min-height: 360px;
+  position: relative; overflow: hidden; background: #000;
+}
+.pg-full img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.ch-div {
+  background: var(--dark2); border: 1px solid #1e1e1e;
+  min-height: 180px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 10px;
+  text-align: center; padding: 40px; margin-bottom: 4px; position: relative; overflow: hidden;
+}
+.ch-div::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, var(--red) 50%, var(--blue) 50%);
+}
+.ch-div::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, var(--blue) 50%, var(--red) 50%);
+}
+.ch-lbl { font-size: 11px; letter-spacing: 0.2em; color: var(--blue); text-transform: uppercase; }
+.ch-name {
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-style: italic;
+  font-size: clamp(30px, 4vw, 52px); color: var(--light); line-height: 1;
+}
+.ch-logo { width: 48px; opacity: 0.5; filter: brightness(10) sepia(1) hue-rotate(180deg) saturate(5); }
+.book-end {
+  background: var(--dark2); border: 1px solid #1e1e1e;
+  min-height: 110px; display: flex; align-items: center; justify-content: center;
+  gap: 24px; flex-wrap: wrap; padding: 32px; margin-top: 4px; position: relative;
+}
+.book-end::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, var(--red) 50%, var(--blue) 50%);
+}
+
+/* ── PRICING ── */
+#pricing { background: var(--dark); border-top: 2px solid var(--blue); border-bottom: 2px solid var(--red); }
+.price-grid {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  margin: 0 56px; border: 1px solid #1e1e1e;
+}
+.pcard { padding: 44px 36px; border-right: 1px solid #1e1e1e; position: relative; transition: background 0.3s; }
+.pcard:last-child { border-right: none; }
+.pcard.feat { background: rgba(139,26,26,0.08); }
+.pcard.feat::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--red) 50%, var(--blue) 50%);
+}
+.pcat { font-size: 11px; letter-spacing: 0.16em; color: var(--blue); text-transform: uppercase; margin-bottom: 10px; }
+.pname {
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-style: italic;
+  font-size: 28px; color: var(--light); margin-bottom: 26px; line-height: 1;
+}
+.plist { list-style: none; font-size: 13px; line-height: 2.4; }
+.plist li { display: flex; justify-content: space-between; border-bottom: 1px solid #2a2a2a; padding: 2px 0; color: var(--light); }
+.pval { color: var(--red-bright); font-weight: 500; }
+.pnote { margin-top: 18px; font-size: 12px; color: var(--light); font-style: italic; line-height: 1.7; }
+
+/* ── ABOUT ── */
+#about { background: var(--black); }
+.about-grid {
+  display: grid; grid-template-columns: 1fr 1.5fr;
+  margin: 0 56px; border: 1px solid #1e1e1e;
+}
+.about-photo {
+  position: relative; overflow: hidden; min-height: 520px;
+  border-right: 1px solid #1e1e1e;
+}
+.about-photo::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, var(--red) 50%, var(--blue) 50%); z-index: 2;
+}
+.about-photo img.main { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; filter: grayscale(15%); }
+.about-photo::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 130px;
+  background: linear-gradient(to top, rgba(0,174,239,0.12), transparent); pointer-events: none;
+}
+.about-logo-ov {
+  position: absolute; bottom: 18px; left: 18px; width: 56px; z-index: 3;
+  filter: brightness(10) sepia(1) hue-rotate(180deg) saturate(5); opacity: 0.55;
+}
+.about-copy { padding: 56px 52px; }
+.about-hl {
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-style: italic;
+  font-size: clamp(32px, 3vw, 44px); line-height: 1; margin-bottom: 8px; color: var(--light);
+}
+.about-hl .r { color: var(--red-bright); }
+.about-hl .b { color: var(--blue); }
+.about-stripe {
+  width: 100%; height: 4px; margin-bottom: 28px;
+  background: linear-gradient(90deg, var(--red) 50%, var(--blue) 50%);
+}
+.about-p { font-size: 15px; line-height: 1.9; color: var(--light); margin-bottom: 22px; }
+.award {
+  border-left: 3px solid var(--blue); padding: 14px 20px;
+  background: rgba(0,174,239,0.04); margin-bottom: 28px;
+}
+.award .aw-yr { font-size: 11px; color: var(--blue); letter-spacing: 0.12em; text-transform: uppercase; }
+.award .aw-nm { font-size: 13px; color: var(--light); font-weight: 500; margin-top: 4px; }
+.award .aw-pc { font-size: 12px; color: var(--light); font-style: italic; margin-top: 2px; }
+.skills { display: flex; flex-wrap: wrap; gap: 8px; }
+.skill {
+  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 5px 12px; border: 1px solid #333; color: var(--light);
+  transition: border-color 0.2s, color 0.2s;
+}
+.skill:hover { border-color: var(--blue); color: var(--blue); }
+
+/* ── CONTACT ── */
+#contact { background: var(--dark); border-top: 2px solid var(--red); }
+.contact-wrap {
+  display: grid; grid-template-columns: 1fr 1fr;
+  margin: 0 56px; border: 1px solid #1e1e1e;
+}
+.contact-info { padding: 52px 48px; border-right: 1px solid #1e1e1e; }
+.contact-info h3 {
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-style: italic;
+  font-size: 32px; color: var(--light); margin-bottom: 20px; line-height: 1.1;
+}
+.contact-info h3 span { color: var(--blue); }
+.contact-info p { font-size: 15px; line-height: 1.9; color: var(--light); margin-bottom: 24px; }
+.contact-logo { width: 72px; opacity: 0.4; filter: brightness(10) sepia(1) hue-rotate(180deg) saturate(5); }
+.contact-form { padding: 52px 48px; display: flex; flex-direction: column; gap: 18px; }
+.frow { display: flex; flex-direction: column; gap: 5px; }
+.frow label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--light); }
+.frow input, .frow textarea, .frow select {
+  background: rgba(255,255,255,0.03); border: 1px solid #222; color: var(--light);
+  padding: 11px 14px; font-family: 'DM Mono', monospace; font-size: 14px;
+  outline: none; resize: none; transition: border-color 0.2s; border-radius: 0; -webkit-appearance: none;
+}
+.frow input:focus, .frow textarea:focus, .frow select:focus { border-color: var(--blue); }
+.frow textarea { height: 110px; }
+.frow select option { background: var(--dark); }
+.sub-btn {
+  background: var(--red-bright); color: white; border: none;
+  padding: 14px 32px; font-family: 'DM Mono', monospace; font-size: 12px;
+  letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer;
+  align-self: flex-start; box-shadow: 4px 4px 0 var(--blue);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.sub-btn:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--blue); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--black); border-top: 1px solid #181818;
+  padding: 20px 56px; display: flex; justify-content: space-between; align-items: center;
+  font-size: 11px; letter-spacing: 0.06em; color: var(--light);
+}
+footer img { height: 22px; opacity: 0.25; filter: brightness(10); }
+footer .r { color: var(--red-bright); }
+
+/* ── FADE ── */
+.fi { opacity: 0; transform: translateY(20px); transition: opacity 0.6s, transform 0.6s; }
+.fi.vis { opacity: 1; transform: none; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 960px) {
+  nav { padding: 0 20px; }
+  .nav-links { gap: 16px; }
+  #home { grid-template-columns: 1fr; }
+  #home::before { display: none; }
+  .hero-text { padding: 56px 24px; }
+  .hero-visual { min-height: 340px; }
+  .svcs { grid-template-columns: 1fr 1fr; }
+  .book-scene, .sec-hdr, .book-cats { padding-left: 20px; padding-right: 20px; }
+  .sec-hdr::after { left: 20px; right: 20px; }
+  .spread { grid-template-columns: 1fr; }
+  .spine { display: none; }
+  .pg-l { border-right: none; border-bottom: 1px solid #222; }
+  .pg-l::after { display: none; }
+  .price-grid, .about-grid, .contact-wrap { grid-template-columns: 1fr; margin: 0 20px; }
+  .pcard { border-right: none; border-bottom: 1px solid #1e1e1e; }
+  .about-photo { min-height: 280px; border-right: none; border-bottom: 1px solid #1e1e1e; }
+  .contact-info { border-right: none; border-bottom: 1px solid #1e1e1e; }
+  section { padding: 64px 0; }
+}
+
+@media (max-width: 640px) {
+  body {
+    font-size: 14px;
+    cursor: auto;
+    padding-bottom: 92px;
+  }
+
+  nav {
+    height: auto;
+    min-height: 112px;
+    padding: 12px 14px 10px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .nav-logo-wrap {
+    justify-content: center;
+  }
+
+  .nav-logo-img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .nav-brand {
+    font-size: 18px;
+  }
+
+  .nav-links {
+    width: 100%;
+    gap: 7px;
+    justify-content: center;
+    flex-wrap: wrap;
+    overflow: visible;
+    padding: 2px 0 0;
+  }
+
+  .nav-links li {
+    flex: 0 0 auto;
+  }
+
+  .nav-links a {
+    display: block;
+    padding: 7px 9px;
+    border: 1px solid #202020;
+    font-size: 9px;
+    letter-spacing: 0.09em;
+  }
+
+  #home {
+    min-height: auto;
+    padding-top: 120px;
+  }
+
+  .hero-text {
+    padding: 44px 18px 36px;
+  }
+
+  .hero-eyebrow {
+    align-items: flex-start;
+    font-size: 10px;
+    line-height: 1.6;
+  }
+
+  .hero-eyebrow::before {
+    width: 22px;
+    margin-top: 8px;
+    flex: 0 0 auto;
+  }
+
+  .hero-name {
+    font-size: clamp(46px, 16vw, 64px);
+  }
+
+  .hero-sub {
+    font-size: 11px;
+    line-height: 1.65;
+  }
+
+  .hero-desc {
+    font-size: 14px;
+    line-height: 1.75;
+    margin-bottom: 28px;
+  }
+
+  .hero-btns,
+  .fb-dl {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .btn-p,
+  .btn-s,
+  .sub-btn {
+    width: 100%;
+    text-align: center;
+    padding: 13px 16px;
+  }
+
+  .hero-visual {
+    min-height: 360px;
+  }
+
+  .hero-badge {
+    top: 14px;
+    right: 14px;
+    font-size: 9px;
+    max-width: calc(100% - 28px);
+  }
+
+  section {
+    padding: 56px 0;
+  }
+
+  .sec-hdr {
+    padding: 0 18px;
+    margin-bottom: 40px;
+    gap: 12px;
+  }
+
+  .sec-hdr::after {
+    left: 18px;
+    right: 18px;
+  }
+
+  .svcs {
+    grid-template-columns: 1fr;
+  }
+
+  .svc {
+    padding: 28px 22px;
+    border-right: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .svc-list {
+    font-size: 13px;
+  }
+
+  .price-grid,
+  .about-grid,
+  .contact-wrap {
+    margin: 0 14px;
+  }
+
+  .pcard,
+  .about-copy,
+  .contact-info,
+  .contact-form {
+    padding: 30px 20px;
+  }
+
+  .plist li {
+    gap: 18px;
+    align-items: baseline;
+  }
+
+  .about-photo {
+    min-height: 340px;
+  }
+
+  .skills {
+    gap: 7px;
+  }
+
+  .skill {
+    font-size: 10px;
+    padding: 6px 10px;
+  }
+
+  footer {
+    padding: 22px 18px;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    text-align: center;
+  }
+
+  #music-player {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    justify-content: center;
+    padding: 10px 12px;
+    gap: 9px;
+    font-size: 10px;
+  }
+
+  #track-name {
+    max-width: 118px;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- MUSIC PLAYER -->
+<div id="music-player">
+  <div class="vinyl" id="vinyl"></div>
+  <span id="track-name">Lo-fi Chill</span>
+  <button id="prev-btn">&#9664;</button>
+  <button id="play-btn">&#9654;</button>
+  <button id="next-btn">&#9654;&#9654;</button>
+</div>
+<audio id="audio" preload="none"></audio>
+
+<!-- NAV -->
+<nav>
+  <a href="#home" class="nav-logo-wrap">
+    <img src="logo.png" alt="Lambright Designs" class="nav-logo-img">
+    <span class="nav-brand">LAMBRIGHT <span>DESIGNS</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section id="home">
+  <div class="hero-text fi">
+    <p class="hero-eyebrow">Virginia-Based · Digital Artist · Designer</p>
+    <h1 class="hero-name"><span class="r">LAMB</span>RIGHT<br><span class="b">DESIGNS</span></h1>
+    <p class="hero-sub">Portfolio 2026 — Nathaniel Lambright</p>
+    <div class="hero-stripe"></div>
+    <p class="hero-desc">Bold, expressive, constantly evolving. Typography, vector illustration, motion graphics, photography, and visual storytelling — powered by Adobe, driven by identity.</p>
+    <div class="hero-btns">
+      <a href="#portfolio" class="btn-p">Open the Book</a>
+      <a href="portfolio.pdf" download class="btn-s">Download PDF</a>
+    </div>
+  </div>
+  <div class="hero-visual fi" style="transition-delay:.15s">
+    <img src="headshot.jpg" alt="Nathaniel Lambright" class="hero-img" loading="eager">
+    <div class="hero-overlay"></div>
+    <div class="hero-bar"></div>
+    <div class="hero-badge">Available for Projects</div>
+    <img src="logo.png" alt="" class="hero-logo-wm">
+  </div>
+</section>
+
+<!-- ═══ SERVICES ═══ -->
+<section id="services">
+  <div class="sec-hdr fi">
+    <span class="sec-num">01</span>
+    <h2 class="sec-ttl">What I <span>Do</span></h2>
+  </div>
+  <div class="svcs">
+    <div class="svc fi"><span class="svc-icon">◈</span><p class="svc-name">Brand Kit</p>
+      <ul class="svc-list"><li>Logo design</li><li>Brand guidelines</li><li>Identity systems</li></ul></div>
+    <div class="svc fi" style="transition-delay:.08s"><span class="svc-icon">◰</span><p class="svc-name">Advertising</p>
+      <ul class="svc-list"><li>Flyers</li><li>Billboards</li><li>Web banners</li><li>Social media</li></ul></div>
+    <div class="svc fi" style="transition-delay:.16s"><span class="svc-icon">◍</span><p class="svc-name">Photography</p>
+      <ul class="svc-list"><li>50-shot sessions</li><li>25 edited photos</li><li>Studio & on-location</li></ul></div>
+    <div class="svc fi" style="transition-delay:.24s"><span class="svc-icon">▶</span><p class="svc-name">Motion</p>
+      <ul class="svc-list"><li>Logo animations</li><li>Motion graphics</li><li>After Effects</li></ul></div>
+  </div>
+</section>
+
+<!-- ═══ PORTFOLIO BOOK ═══ -->
+<!-- ═══════════════ PORTFOLIO FLIPBOOK ═══════════════ -->
+<!-- ═══════════════ PORTFOLIO ═══════════════ -->
+<section id="portfolio">
+  <div class="sec-hdr fi">
+    <span class="sec-num">02</span>
+    <h2 class="sec-ttl">The <span>Book</span></h2>
+  </div>
+
+  <!-- Chapter tabs -->
+  <div class="fb-tabs fi">
+    <button class="fb-tab active" data-pg="0">Cover</button>
+    <button class="fb-tab" data-pg="3">Selected Work</button>
+    <button class="fb-tab" data-pg="7">Branding</button>
+    <button class="fb-tab" data-pg="11">Interactive</button>
+    <button class="fb-tab" data-pg="15">Photography</button>
+    <button class="fb-tab" data-pg="18">Motion</button>
+    <button class="fb-tab" data-pg="20">Contact</button>
+  </div>
+
+  <!-- Viewer -->
+  <div class="fb-viewer fi">
+
+    <!-- Page display area -->
+    <div class="fb-stage" id="fb-stage">
+
+      <!-- Pages 1-21 from Nathaniel Lambright Digital Portfolio 2026 -->
+      <div class="fb-pg active" data-n="0">
+        <img src="digital-pages/page-01.png" alt="Nathaniel Lambright Digital Portfolio 2026 page 1">
+      </div>
+      <div class="fb-pg" data-n="1">
+        <img src="digital-pages/page-02.png" alt="Nathaniel Lambright Digital Portfolio 2026 page 2" loading="lazy">
+      </div>
+      <div class="fb-pg" data-n="2">
+        <img src="digital-pages/page-03.png" alt="Nathaniel Lambright Digital Portfolio 2026 page 3" loading="lazy">
+      </div>
+      <div class="fb-pg" data-n="3">
+        <img src="digital-pages/page-04.png" alt="Nathaniel Lambright Digital Portfolio 2026 page 4" loading="lazy">
+      </div>
+      <div class="fb-pg" data-n="4">
+        <img src="digital-pages/page-05.png" alt="Nathaniel Lambright Digital Portfolio 2026 page 5" loading="lazy">
+      </div>
+      <div class="fb-pg" data-n="5">
+        <img src="digital-pages/page-06.png" alt="Nathaniel Lambright Digital Portfolio 2026 page 6" loading="lazy">
+      </div>
+      <div class="fb-pg" data-n="6">
+        <img src="digital-pages/page-07.png" alt="Nathaniel Lambright Digital Portfolio 2026 page 7" loading="lazy">
+      </div>
+      <div class="fb-pg" data-n="7">
+        <img src="digital-pages/page-08.png" alt="Nathaniel Lambright Digital Portfolio 2026 page 8" loading="lazy">
+      </div>
+      <div class="fb-pg" data-n="8">
+        <img src="digital-pages/page-09.png" alt="Nathaniel Lambright Digital Portfolio 2026 page 9" loading="lazy">
+      </div>
+      <div class="fb-pg" data-n="9">
+        <img src="digital-pages/page-10.png" alt="Nathaniel Lambright Digital Portfolio 2026 page 10" loading="lazy">
+      </div>
+      <div class="fb-pg" data-n="10">
+        <img src="digital-pages/page-11.png" alt="Nathaniel Lambright Digital Portfolio 2026 page 11" loading="lazy">
+      </div>
+      <div class="fb-pg" data-n="11">
+        <img src="digital-pages/page-12.png" alt="Nathaniel Lambright Digital Portfolio 2026 page 12" loading="lazy">
+      </div>
+      <div class="fb-pg" data-n="12">
+        <img src="digital-pages/page-13.png" alt="Nathaniel Lambright Digital Portfolio 2026 page 13" loading="lazy">
+      </div>
+      <div class="fb-pg" data-n="13">
+        <img src="digital-pages/page-14.png" alt="Nathaniel Lambright Digital Portfolio 2026 page 14" loading="lazy">
+      </div>
+      <div class="fb-pg" data-n="14">
+        <img src="digital-pages/page-15.png" alt="Nathaniel Lambright Digital Portfolio 2026 page 15" loading="lazy">
+      </div>
+      <div class="fb-pg" data-n="15">
+        <img src="digital-pages/page-16.png" alt="Nathaniel Lambright Digital Portfolio 2026 page 16" loading="lazy">
+      </div>
+      <div class="fb-pg" data-n="16">
+        <img src="digital-pages/page-17.png" alt="Nathaniel Lambright Digital Portfolio 2026 page 17" loading="lazy">
+      </div>
+      <div class="fb-pg" data-n="17">
+        <img src="digital-pages/page-18.png" alt="Nathaniel Lambright Digital Portfolio 2026 page 18" loading="lazy">
+      </div>
+      <div class="fb-pg" data-n="18">
+        <img src="digital-pages/page-19.png" alt="Nathaniel Lambright Digital Portfolio 2026 page 19" loading="lazy">
+      </div>
+      <div class="fb-pg" data-n="19">
+        <img src="digital-pages/page-20.png" alt="Nathaniel Lambright Digital Portfolio 2026 page 20" loading="lazy">
+      </div>
+      <div class="fb-pg" data-n="20">
+        <img src="digital-pages/page-21.png" alt="Nathaniel Lambright Digital Portfolio 2026 page 21" loading="lazy">
+      </div>
+
+    </div><!-- fb-stage -->
+
+    <!-- Left / right click zones -->
+    <button class="fb-zone fb-zone-left" id="fb-prev" aria-label="Previous page">
+      <span class="fb-arrow">&#8592;</span>
+    </button>
+    <button class="fb-zone fb-zone-right" id="fb-next" aria-label="Next page">
+      <span class="fb-arrow">&#8594;</span>
+    </button>
+
+  </div><!-- fb-viewer -->
+
+  <!-- Controls bar -->
+  <div class="fb-bar fi">
+    <button class="fb-btn" id="fb-prev2">&#8592; Prev</button>
+    <div class="fb-meta">
+      <span id="fb-num">Page 1 of 21</span>
+      <div class="fb-track"><div class="fb-fill" id="fb-fill"></div></div>
+    </div>
+    <button class="fb-btn" id="fb-next2">Next &#8594;</button>
+  </div>
+
+  <!-- PDF download -->
+  <div class="fb-dl fi">
+    <div class="fb-dl-stripe"></div>
+    <a href="portfolio.pdf" download class="btn-p">&#8595; Download Full Portfolio PDF</a>
+    <a href="#contact" class="btn-s">Get in Touch</a>
+  </div>
+
+</section>
+
+<style>
+/* ── TABS ── */
+.fb-tabs {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  padding: 0 56px; margin-bottom: 28px;
+}
+.fb-tab {
+  padding: 7px 18px; font-size: 11px; letter-spacing: .12em;
+  text-transform: uppercase; font-family: 'DM Mono', monospace;
+  border: 1px solid #2a2a2a; background: transparent; color: var(--light); cursor: pointer;
+  transition: all .2s;
+}
+.fb-tab:hover { border-color: var(--blue); color: var(--blue); }
+.fb-tab.active { background: var(--red-bright); border-color: var(--red-bright); color: #fff; }
+
+/* ── VIEWER ── */
+.fb-viewer {
+  position: relative; margin: 0 56px;
+  background: #0a0a0a;
+  border: 1px solid #222;
+  box-shadow: 0 20px 80px rgba(0,0,0,.7);
+  /* red top / blue bottom border */
+  border-top: 3px solid var(--red);
+  border-bottom: 3px solid var(--blue);
+  overflow: hidden;
+}
+
+/* ── STAGE ── */
+.fb-stage { position: relative; width: 100%; }
+
+/* Each page hidden by default */
+.fb-pg {
+  display: none;
+  width: 100%;
+  animation: fb-in .25s ease;
+}
+.fb-pg.active { display: block; }
+@keyframes fb-in {
+  from { opacity: 0; transform: scale(.98); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Standard image page */
+.fb-pg > img {
+  width: 100%; height: auto; display: block;
+}
+
+/* ── VIDEO PAGES ── */
+.fb-video-pg { position: relative; }
+.fb-vid-top { position: relative; }
+
+/* Background image faded */
+.fb-vid-bg {
+  width: 100%; height: auto; display: block;
+  filter: brightness(.18) blur(2px);
+}
+
+/* Overlay sits on top of faded bg */
+.fb-vid-overlay {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 32px 40px; gap: 20px;
+}
+
+.fb-vid-info { text-align: center; }
+.fb-vid-label {
+  font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--blue); margin-bottom: 8px; font-family: 'DM Mono', monospace;
+}
+.fb-vid-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700; font-style: italic;
+  font-size: clamp(22px, 3vw, 40px);
+  color: #fff; line-height: 1;
+}
+
+.fb-video {
+  width: 100%; max-width: 780px;
+  aspect-ratio: 16/9;
+  background: #000;
+  border: 2px solid #333;
+  outline: none;
+}
+
+/* ── LEFT/RIGHT CLICK ZONES ── */
+.fb-zone {
+  position: absolute; top: 0; bottom: 0; width: 12%;
+  background: transparent; border: none; cursor: pointer;
+  display: flex; align-items: center;
+  z-index: 10; opacity: 0; transition: opacity .2s;
+}
+.fb-zone:hover { opacity: 1; }
+.fb-zone:disabled { cursor: default; opacity: 0 !important; }
+.fb-zone-left  { left: 0;  justify-content: flex-start; padding-left: 16px;  background: linear-gradient(to right, rgba(0,0,0,.4), transparent); }
+.fb-zone-right { right: 0; justify-content: flex-end;   padding-right: 16px; background: linear-gradient(to left,  rgba(0,0,0,.4), transparent); }
+.fb-arrow {
+  font-size: 28px; color: #fff;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: rgba(200,55,45,.7); border: 2px solid rgba(255,255,255,.2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: sans-serif;
+}
+
+/* ── CONTROLS BAR ── */
+.fb-bar {
+  display: flex; align-items: center; justify-content: center;
+  gap: 28px; padding: 20px 56px; flex-wrap: wrap;
+}
+.fb-btn {
+  background: var(--dark2); border: 1px solid #333; color: var(--light);
+  padding: 10px 24px; font-family: 'DM Mono', monospace; font-size: 12px;
+  letter-spacing: .1em; text-transform: uppercase; cursor: pointer;
+  transition: all .2s;
+}
+.fb-btn:hover { border-color: var(--blue); color: var(--blue); }
+.fb-btn:disabled { opacity: .25; cursor: default; border-color: #1a1a1a; color: #444; }
+.fb-meta { text-align: center; }
+#fb-num { font-size: 12px; letter-spacing: .12em; color: var(--light); display: block; margin-bottom: 8px; }
+.fb-track { width: 200px; height: 2px; background: #222; border-radius: 99px; }
+.fb-fill  { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--red), var(--blue)); transition: width .3s; }
+
+/* ── PDF DOWNLOAD BAR ── */
+.fb-dl {
+  display: flex; align-items: center; justify-content: center;
+  gap: 18px; flex-wrap: wrap;
+  margin: 40px 56px 0; padding: 26px 40px;
+  border: 1px solid #222; background: var(--dark2); position: relative;
+}
+.fb-dl-stripe {
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--red) 50%, var(--blue) 50%);
+}
+
+/* ── MOBILE ── */
+@media (max-width: 960px) {
+  .fb-viewer, .fb-tabs, .fb-bar { margin-left: 20px; margin-right: 20px; }
+  .fb-dl { margin-left: 20px; margin-right: 20px; }
+  .fb-tabs { padding: 0 20px; }
+  .fb-bar { padding: 16px 20px; }
+  .fb-vid-overlay { padding: 20px; }
+  .fb-track { width: 120px; }
+}
+
+@media (max-width: 640px) {
+  .fb-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin: 0 14px 18px;
+    padding: 0;
+  }
+
+  .fb-tab {
+    width: 100%;
+    min-height: 42px;
+    padding: 9px 8px;
+    font-size: 10px;
+    letter-spacing: .08em;
+    text-align: center;
+  }
+
+  .fb-tab:first-child,
+  .fb-tab:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .fb-viewer {
+    margin: 0 14px;
+    box-shadow: 0 12px 42px rgba(0,0,0,.72);
+  }
+
+  .fb-pg > img {
+    width: 100%;
+    max-height: 72vh;
+    object-fit: contain;
+    background: #050505;
+  }
+
+  .fb-zone {
+    width: 18%;
+    opacity: 1;
+  }
+
+  .fb-zone-left {
+    padding-left: 8px;
+  }
+
+  .fb-zone-right {
+    padding-right: 8px;
+  }
+
+  .fb-arrow {
+    width: 36px;
+    height: 36px;
+    font-size: 22px;
+  }
+
+  .fb-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 0 14px;
+    padding: 16px 0 0;
+  }
+
+  .fb-meta {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+
+  .fb-btn {
+    width: 100%;
+    padding: 12px 10px;
+    font-size: 11px;
+  }
+
+  .fb-track {
+    width: 100%;
+  }
+
+  .fb-dl {
+    margin: 28px 14px 0;
+    padding: 22px 18px;
+  }
+}
+</style>
+
+<script>
+(function () {
+  const pages   = document.querySelectorAll('.fb-pg');
+  const total   = pages.length; // 21
+  const prevBtns = [document.getElementById('fb-prev'),  document.getElementById('fb-prev2')];
+  const nextBtns = [document.getElementById('fb-next'),  document.getElementById('fb-next2')];
+  const numEl   = document.getElementById('fb-num');
+  const fillEl  = document.getElementById('fb-fill');
+  const tabs    = document.querySelectorAll('.fb-tab');
+  let cur = 0;
+
+  // Chapter start pages (0-indexed)
+  const chapters = [0, 3, 7, 11, 15, 18, 20];
+
+  function goTo(n) {
+    // Pause any playing video on current page
+    const vid = pages[cur].querySelector('video');
+    if (vid) { vid.pause(); }
+
+    pages[cur].classList.remove('active');
+    cur = Math.max(0, Math.min(n, total - 1));
+    pages[cur].classList.add('active');
+
+    numEl.textContent = 'Page ' + (cur + 1) + ' of ' + total;
+    fillEl.style.width = ((cur + 1) / total * 100) + '%';
+
+    prevBtns.forEach(b => b.disabled = cur === 0);
+    nextBtns.forEach(b => b.disabled = cur === total - 1);
+
+    // Highlight active tab
+    tabs.forEach((tab, i) => {
+      const start = chapters[i];
+      const end   = (chapters[i + 1] ?? total) - 1;
+      tab.classList.toggle('active', cur >= start && cur <= end);
+    });
+
+    // Scroll viewer into view
+    document.querySelector('.fb-viewer').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  prevBtns.forEach(b => b.addEventListener('click', () => goTo(cur - 1)));
+  nextBtns.forEach(b => b.addEventListener('click', () => goTo(cur + 1)));
+
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => goTo(chapters[i]));
+  });
+
+  // Swipe support
+  let touchX = 0;
+  const stage = document.getElementById('fb-stage');
+  stage.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+  stage.addEventListener('touchend',   e => {
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 40) dx < 0 ? goTo(cur + 1) : goTo(cur - 1);
+  });
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(cur + 1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   goTo(cur - 1);
+  });
+
+  goTo(0);
+})();
+</script>
+<section id="pricing">
+  <div class="sec-hdr fi">
+    <span class="sec-num">03</span>
+    <h2 class="sec-ttl">Pricing</h2>
+  </div>
+  <div class="price-grid fi">
+    <div class="pcard">
+      <p class="pcat">Identity</p><p class="pname">Brand Kit</p>
+      <ul class="plist">
+        <li><span>Logo design</span><span class="pval">$200</span></li>
+        <li><span>Brand guidelines</span><span class="pval">Included</span></li>
+      </ul>
+      <p class="pnote">Prices are not set — reach out and let's talk.</p>
+    </div>
+    <div class="pcard feat">
+      <p class="pcat">Advertising</p><p class="pname">Advert</p>
+      <ul class="plist">
+        <li><span>Flyer</span><span class="pval">$25</span></li>
+        <li><span>Billboard</span><span class="pval">$60</span></li>
+        <li><span>Web banner</span><span class="pval">$20</span></li>
+        <li><span>Social media post</span><span class="pval">$10</span></li>
+        <li><span>Full campaign add-on</span><span class="pval">$100</span></li>
+        <li><span>Bundle — save</span><span class="pval">$15</span></li>
+      </ul>
+      <p class="pnote">Bundle includes everything + an alternate poster. Prices are not set — reach out and let's talk.</p>
+    </div>
+    <div class="pcard">
+      <p class="pcat">Photo & Motion</p><p class="pname">Photo + Motion</p>
+      <ul class="plist">
+        <li><span>50 shots + 25 edits</span><span class="pval">Quote</span></li>
+        <li><span>Mileage</span><span class="pval">$15 / mile</span></li>
+        <li><span>Animation (per 5 sec)</span><span class="pval">$20</span></li>
+      </ul>
+      <p class="pnote">Prices are not set — reach out and let's talk.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ABOUT ═══ -->
+<section id="about">
+  <div class="sec-hdr fi">
+    <span class="sec-num">04</span>
+    <h2 class="sec-ttl">About</h2>
+  </div>
+  <div class="about-grid fi">
+    <div class="about-photo">
+      <img src="headshot.jpg" alt="Nathaniel Lambright" class="main" loading="lazy">
+      <img src="logo.png" alt="" class="about-logo-ov">
+    </div>
+    <div class="about-copy">
+      <h3 class="about-hl"><span class="r">Bold.</span><br><span class="b">Expressive.</span><br>Always evolving.</h3>
+      <div class="about-stripe"></div>
+      <p class="about-p">I'm a Virginia-based digital artist and designer with an A.A.S. in Graphic and Media Design from Virginia Peninsula Community College (graduating May 2026). My work focuses on typography, vector illustration, and motion graphics, with additional creative interests in photography and visual storytelling.</p>
+      <p class="about-p">I primarily create using Adobe Illustrator, Photoshop, InDesign, and After Effects. My style blends chaotic, playful, dark, and unconventional influences. As an artist living with cerebral palsy, I see art as both a creative outlet and a form of freedom — allowing me to communicate ideas, emotions, and identity in ways that feel unrestricted.</p>
+      <div class="award">
+        <p class="aw-yr">2025 — Award</p>
+        <p class="aw-nm">Digital Art Award — VPCC Student Art Show</p>
+        <p class="aw-pc">Piece: Super Font Bros</p>
+      </div>
+      <div class="skills">
+        <span class="skill">Illustrator</span><span class="skill">Photoshop</span>
+        <span class="skill">InDesign</span><span class="skill">After Effects</span>
+        <span class="skill">Dreamweaver</span><span class="skill">Adobe XD</span>
+        <span class="skill">Typography</span><span class="skill">Motion Graphics</span>
+        <span class="skill">Photography</span><span class="skill">Vector Illustration</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTACT ═══ -->
+<section id="contact">
+  <div class="sec-hdr fi">
+    <span class="sec-num">05</span>
+    <h2 class="sec-ttl">Let's <span>Work</span></h2>
+  </div>
+  <div class="contact-wrap fi">
+    <div class="contact-info">
+      <h3>Got a project?<br><span>Let's talk.</span></h3>
+      <p>Open to freelance, collaborations, and commissions. Prices are flexible — reach out and let's figure something out together.</p>
+      <p style="font-size:13px;color:#ffffff;">Based in Virginia · Available remotely and locally</p>
+      <br>
+      <img src="logo.png" alt="Lambright Designs" class="contact-logo">
+    </div>
+    <!-- Formspree: emails go to lambrightdesigns@gmail.com
+         SETUP: go to formspree.io, create free account, make a form,
+         then replace mlgakevr below with your actual form ID -->
+    <form class="contact-form" action="https://formspree.io/f/mlgakevr" method="POST" onsubmit="handleSubmit(event)">
+      <input type="hidden" name="_replyto" value="lambrightdesigns@gmail.com">
+      <input type="hidden" name="_subject" value="New project inquiry — Lambright Designs">
+      <div class="frow"><label>Your name</label><input type="text" name="name" placeholder="Full name" required></div>
+      <div class="frow"><label>Email</label><input type="email" name="email" placeholder="you@email.com" required></div>
+      <div class="frow"><label>Service needed</label>
+        <select name="service">
+          <option>Brand kit</option><option>Advertising / Flyers</option>
+          <option>Billboard</option><option>Web banner</option>
+          <option>Social media posts</option><option>Photography</option>
+          <option>Motion graphics / Animation</option><option>Full campaign</option>
+          <option>Something else</option>
+        </select>
+      </div>
+      <div class="frow"><label>Tell me about it</label><textarea name="message" placeholder="Describe your project..."></textarea></div>
+      <button type="submit" class="sub-btn">Send It →</button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <img src="logo.png" alt="Lambright Designs">
+  <span><span class="r">Lambright Designs</span> © 2026 Nathaniel Lambright · Virginia</span>
+  <span style="color:#ffffff;font-size:10px;">All rights reserved</span>
+</footer>
+
+<script>
+/* ── START AT TOP ── */
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+window.addEventListener('pageshow', () => {
+  if (!window.location.hash) {
+    window.scrollTo(0, 0);
+  }
+});
+
+/* ── MUSIC ── */
+const tracks = [
+  { src:'lofi-chill.mp3', name:'Lo-fi Chill' }
+];
+let cur=0, playing=false;
+const audio=document.getElementById('audio');
+const playBtn=document.getElementById('play-btn');
+const tname=document.getElementById('track-name');
+const vinyl=document.getElementById('vinyl');
+function loadTrack(i){ audio.src=tracks[i].src; tname.textContent=tracks[i].name; }
+function togglePlay(){
+  if(playing){ audio.pause(); playBtn.innerHTML='&#9654;'; vinyl.classList.remove('spinning'); playing=false; }
+  else { audio.play().then(()=>{ playBtn.innerHTML='&#9646;&#9646;'; vinyl.classList.add('spinning'); playing=true; }).catch(()=>{}); }
+}
+document.getElementById('prev-btn').addEventListener('click',()=>{ cur=(cur-1+tracks.length)%tracks.length; loadTrack(cur); if(playing)audio.play(); });
+document.getElementById('next-btn').addEventListener('click',()=>{ cur=(cur+1)%tracks.length; loadTrack(cur); if(playing)audio.play(); });
+playBtn.addEventListener('click',()=>{ if(!audio.src||audio.src===window.location.href)loadTrack(cur); togglePlay(); });
+audio.addEventListener('ended',()=>{ cur=(cur+1)%tracks.length; loadTrack(cur); audio.play(); });
+
+/* ── BOOK FILTER ── */
+document.querySelectorAll('.cat').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.cat').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    const c=btn.dataset.c;
+    document.querySelectorAll('.chapter').forEach(ch=>{
+      ch.classList.toggle('on', ch.dataset.ch.split(' ').includes(c));
+    });
+  });
+});
+
+/* ── SCROLL FADE ── */
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('vis'); });
+},{threshold:0.1});
+document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
+
+/* ── CONTACT — sends to lambrightdesigns@gmail.com via Formspree ── */
+async function handleSubmit(e){
+  e.preventDefault();
+  const form=e.target;
+  const btn=form.querySelector('.sub-btn');
+  btn.textContent='Sending…'; btn.disabled=true;
+  try {
+    const res=await fetch(form.action,{
+      method:'POST',
+      body:new FormData(form),
+      headers:{'Accept':'application/json'}
+    });
+    if(res.ok){
+      btn.textContent='Sent! ✓'; btn.style.background='#1a6e2a';
+      form.reset();
+      setTimeout(()=>{ btn.textContent='Send It →'; btn.style.background=''; btn.disabled=false; },4000);
+    } else {
+      btn.textContent='Error — try again'; btn.style.background='#8B1A1A'; btn.disabled=false;
+    }
+  } catch(err){
+    btn.textContent='Error — try again'; btn.style.background='#8B1A1A'; btn.disabled=false;
+  }
+}
+</script>
+</body>
+</html>
